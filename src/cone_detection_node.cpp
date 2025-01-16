@@ -205,7 +205,7 @@ void OutlierFilter::publishCloud(
     Cloud::Ptr &cloud) {
     sensor_msgs::msg::PointCloud2 cloud_msg;
     pcl::toROSMsg(*cloud, cloud_msg);
-    cloud_msg.header.frame_id = "ouster";
+    cloud_msg.header.frame_id = "os_sensor";
     cloud_msg.header.stamp = this->now();
     publisher->publish(cloud_msg);
 }
@@ -240,7 +240,7 @@ void OutlierFilter::visualizeCones(const std::vector<ConeDescriptor> &cones) {
 
     for (const auto &cone : cones) {
         visualization_msgs::msg::Marker marker;
-        marker.header.frame_id = "ouster";
+        marker.header.frame_id = "os_sensor";
         marker.header.stamp = this->now();
         marker.ns = "cones";
         marker.id = id++;
@@ -269,7 +269,7 @@ void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<doub
 
     for (const auto &cone : sorted_cones) {
         visualization_msgs::msg::Marker marker;
-        marker.header.frame_id = "ouster";
+        marker.header.frame_id = "os_sensor";
         marker.header.stamp = this->now();
         marker.ns = "sorted_cones";
         marker.id = id++;
