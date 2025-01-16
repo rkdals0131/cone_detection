@@ -61,7 +61,7 @@ OutlierFilter::OutlierFilter()
 
     // 서브스크라이버 초기화 (포인트 클라우드 데이터 수신)
     point_cloud_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "/ouster/points", rclcpp::SensorDataQoS(), // <-- QoS '10' -> 'rclcpp::SensorDataQoS()'로 바꿈
+        "/ouster/points", rclcpp::SensorDataQoS(), // <-- QoS '10' -> 'rclcpp::SensorDataQoS()'로 바꿈.
         std::bind(&OutlierFilter::callback, this, std::placeholders::_1));
 
     RCLCPP_INFO(this->get_logger(), "Cone_detection_node has been started!!!!!!!!!!!!!!!!!!!");  // 노드 시작 로그 출력
