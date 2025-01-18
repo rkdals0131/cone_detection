@@ -10,6 +10,9 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/voxel_grid.h>
 #include <Eigen/Dense>
+
+#include "/usr/include/pcl-1.12/pcl/common/transforms.h"
+
 #include "common_defs.h"
 
 namespace LIDAR {
@@ -51,6 +54,9 @@ protected:
 
     // 포인트 클라우드 필터링
     void filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out);
+
+    // 180도 회전 보정
+    void correctYawRotation(Cloud::Ptr &cloud);
 
     // Voxelization (다운샘플링)
     void voxelizeCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out, float leaf_size);

@@ -1,4 +1,4 @@
-#include "cone_detection/cone_detection_node.h"
+#include "../include/cone_detection/cone_detection_node.h"
 #include <memory>
 
 namespace LIDAR {
@@ -154,6 +154,20 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
         extract.setNegative(true);
         extract.filter(*cloud_out);
     }
+
+    // 여기에서 180도 회전 보정
+    correctYawRotation(cloud_out);
+}
+
+// 필터링 후 180도 회전 보정
+void OutlierFilter::correctYawRotation(Cloud::Ptr &cloud) {
+    Eigen::Affine3f transform = Eigen::Affine3f::Identity();
+
+    // Z축 기준으로 180도 회전
+    transform.rotate(Eigen::AngleAxisf(M_PI, Eigen::Vector3f::UnitZ()));
+
+    // 포인트 클라우드에 변환 적용
+    pcl::transformPointCloud(*cloud, *cloud, transform);
 }
 
 
