@@ -119,7 +119,7 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
 
         // Config 파일에서 로드된 파라미터로 필터링
         if ((angle >= params_.roi_angle_min && angle <= params_.roi_angle_max) &&  // ROI 각도 범위
-            point.x >= 0 &&
+            /* point.x <= 0 && */
             distance >= params_.min_distance &&  // 최소 거리 조건 추가
             distance <= params_.max_distance &&
             point.z >= params_.z_threshold_min && point.z <= params_.z_threshold_max &&

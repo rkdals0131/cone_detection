@@ -1,15 +1,17 @@
 cone_detection:
   ros__parameters:
     z_threshold_enable: true        # Z축 필터링 활성화 여부 (True: 활성화, False: 비활성화)
-    z_threshold_min: -100.0          # Z축 최소값 (필터링 기준, 지면 제거를 위한 값)
-    z_threshold_max: 300.0           # Z축 최대값 (필터링 기준, 최대 높이 제한)
+    z_threshold_min: -6.0          # Z축 최소값 (필터링 기준, 지면 제거를 위한 값)
+    z_threshold_max: 3.0           # Z축 최대값 (필터링 기준, 최대 높이 제한)
     min_distance: 0.3               # 최소 거리 필터링 (LIDAR로부터 너무 가까운 점 제거)
-    max_distance: 100.0             # 최대 거리 필터링 (LIDAR로부터 너무 먼 점 제거)
+    max_distance: 10.0             # 최대 거리 필터링 (LIDAR로부터 너무 먼 점 제거)
     intensity_threshold: 10.0       # Intensity 필터링 기준값 (값이 낮은 점 제거)
     plane_distance_threshold: 0.3  # RANSAC 평면 세그먼테이션의 거리 허용 오차 (평면 판별 기준)
-    roi_angle_min: -360.0             # ROI(관심 영역)의 최소 각도 (X축 기준, 좌측 범위)
-    roi_angle_max: 360.0            # ROI(관심 영역)의 최대 각도 (X축 기준, 우측 범위)
+    # ROI 0도 기준은 라이다 정면이 -90도, 라이다 오른쪽이 0도, 라이다 꼬리가 90도
+    roi_angle_min: -160.0             # ROI(관심 영역)의 최소 각도 (X축 기준, 좌측 범위)
+    roi_angle_max: -20.0            # ROI(관심 영역)의 최대 각도 (X축 기준, 우측 범위)
+
     voxel_leaf_size: 0.1           # Voxel Grid 필터링의 leaf 크기 (다운샘플링 해상도)
     ec_cluster_tolerance: 0.25      # Euclidean 클러스터링의 포인트 간 거리 허용 오차
-    ec_min_cluster_size: 3   #10      # Euclidean 클러스터링의 최소 클러스터 크기 (포인트 개수)
-    ec_max_cluster_size: 50   #200     # Euclidean 클러스터링의 최대 클러스터 크기 (포인트 개수)
+    ec_min_cluster_size: 10   #10      # Euclidean 클러스터링의 최소 클러스터 크기 (포인트 개수)
+    ec_max_cluster_size: 200   #200     # Euclidean 클러스터링의 최대 클러스터 크기 (포인트 개수)
