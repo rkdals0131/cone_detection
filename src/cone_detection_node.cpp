@@ -175,35 +175,42 @@ void OutlierFilter::correctYawRotation(Cloud::Ptr &cloud) {
 
 // 클러스터링 수행 (콘 클러스터 식별)
 void OutlierFilter::clusterCones(Cloud::Ptr &cloud_out, std::vector<ConeDescriptor> &cones) {
-    pcl::EuclideanClusterExtraction<Point> ec;
-    std::vector<pcl::PointIndices> cluster_indices;
-    ec.setClusterTolerance(params_.ec_cluster_tolerance);
-    ec.setMinClusterSize(params_.ec_min_cluster_size);
-    ec.setMaxClusterSize(params_.ec_max_cluster_size);
-    ec.setInputCloud(cloud_out);
-    ec.extract(cluster_indices);
+    // 클러스터링 객체 생성
+    pcl::EuclideanClusterExtraction<Point> ec; // PCL 라이브러리에서 제공하는 유클리드 거리 기반 클러스터링 클래스
+    std::vector<pcl::PointIndices> cluster_indices; // 클러스터링 결과인 각 클러스터 점 인덱스 목록을 담을 벡터
 
+    // 클러스터링 파라미터 설정
+    ec.setClusterTolerance(params_.ec_cluster_tolerance); // 한 클러스터 내 포인트 간 최대 거리 임계치
+    ec.setMinClusterSize(params_.ec_min_cluster_size);    // 클러스터로 인정하기 위한 최소 포인트 수
+    ec.setMaxClusterSize(params_.ec_max_cluster_size);    // 클러스터로 인정하기 위한 최대 포인트 수
+    ec.setInputCloud(cloud_out); // 입력 포인트 클라우드
+    
+    // 클러스터링 수행
+    ec.extract(cluster_indices); // 결과로 cluster_indices에 각 클러스터별로 포인트 목록이 저장
+
+    // 클러스터 포인트 추출 준비
     pcl::ExtractIndices<Point> extract;
     extract.setInputCloud(cloud_out);
 
-    // 각 클러스터를 ConeDescriptor로 변환
-    cones.reserve(cluster_indices.size());
-    for (const auto &indices : cluster_indices) {
+    cones.reserve(cluster_indices.size()); // 클러스터 정보를 담을 벡터(파라미터) 초기화
+
+    // 각 클러스터의 인덱스를 이용해 ConeDescriptor 생성
+    for (const auto &indices : cluster_indices) { // cluster_indices는 pcl::PointIndices의 모음, 각 포인트 목록에 대해 반복
         ConeDescriptor cone;
-        pcl::PointIndices::Ptr indices_ptr(new pcl::PointIndices(indices));
-        extract.setIndices(indices_ptr);
-        extract.filter(*cone.cloud);
-        cone.calculate();
-        cones.push_back(cone);
+        pcl::PointIndices::Ptr indices_ptr(new pcl::PointIndices(indices)); // 한 클러스터에 대한 포인터 인덱스를 PCL타입으로 변환
+        extract.setIndices(indices_ptr); // extract 객체에 추출할 클러스터의 인덱스들만 추출하여 cone.cloud에 저장
+        extract.filter(*cone.cloud); // indices_ptr에 해당하는 포인트만 cone.cloud에 추출 -> 현재 클러스터를 하나의 점 구름(cone.cloud)으로 분리
+        cone.calculate(); // ConeDescriptor 내부 계산(무게중심, 평균 등), common_defs.h에서 정의된 함수
+        cones.push_back(cone); // 완성된 ConeDescriptor를 벡터에 추가
     }
 }
 
 // 클러스터된 콘을 정렬
 std::vector<std::vector<double>> OutlierFilter::sortCones(const std::vector<ConeDescriptor> &cones) {
     std::vector<std::vector<double>> sorted_cones;
-
+    // 각 클러스터의 무게중심 좌표(X, Y)를 벡터에 추가
     for (const auto &cone : cones) {
-        sorted_cones.push_back({cone.mean.x, cone.mean.y});
+        sorted_cones.push_back({cone.mean.x, cone.mean.y}); // sorted_cones는 벡터로 구성된 리스트, 각 클러스터의 중심 좌표(X, Y)를 담음
     }
 
     // x축을 기준으로 정렬
@@ -232,17 +239,18 @@ void OutlierFilter::publishArray(
     const std::vector<std::vector<double>> &array) {
     std_msgs::msg::Float64MultiArray msg;
 
-    msg.layout.dim.resize(2);
+    // 메시지 레이아웃 설정
+    msg.layout.dim.resize(2); // 2차원 배열 형태 
     if (!array.empty()) {
-        msg.layout.dim[0].size = array.size();
-        msg.layout.dim[1].size = array[0].size();
-        msg.layout.dim[0].stride = array.size() * array[0].size();
-        msg.layout.dim[1].stride = array[0].size();
+        msg.layout.dim[0].size = array.size(); // 행 개수(클러스터 개수)
+        msg.layout.dim[1].size = array[0].size(); // 열 개수(각 클러스터의 x, y 좌표)
+        msg.layout.dim[0].stride = array.size() * array[0].size(); // 전체 데이터 크기
+        msg.layout.dim[1].stride = array[0].size(); // 각 클러스터 데이터 크기
     }
-
+    // 데이터를 메시지의 배열에 추가
     for (const auto &row : array) {
         for (const auto &val : row) {
-            msg.data.push_back(val);
+            msg.data.push_back(val); // x,y 좌표 순차적으로 추가
         }
     }
 
