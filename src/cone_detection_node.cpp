@@ -136,23 +136,25 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
     cloud_out->is_dense = downsampled_cloud->is_dense;
 
     // 평면 제거를 위한 RANSAC 세그먼테이션
-    pcl::ModelCoefficients::Ptr plane_coefs(new pcl::ModelCoefficients);
-    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
-    pcl::SACSegmentation<Point> seg;
-    seg.setOptimizeCoefficients(true);
-    seg.setModelType(pcl::SACMODEL_PLANE);
-    seg.setMethodType(pcl::SAC_RANSAC);
-    seg.setDistanceThreshold(params_.plane_distance_threshold);
-    seg.setInputCloud(cloud_out);
-    seg.segment(*inliers, *plane_coefs);
+    pcl::ModelCoefficients::Ptr plane_coefs(new pcl::ModelCoefficients); // 평면의 방정식 계수
+    pcl::PointIndices::Ptr inliers(new pcl::PointIndices); // RANSAC -> 평면 포인트 명단
+    pcl::SACSegmentation<Point> seg; // RANSAC 세그먼테이션 객체
+    seg.setOptimizeCoefficients(true); // 계수 최적화
+    seg.setModelType(pcl::SACMODEL_PLANE); // 평면 모델 타입
+    seg.setMethodType(pcl::SAC_RANSAC); // RANSAC 방법 타입
+    // 거리 허용 오차 설정
+    seg.setDistanceThreshold(params_.plane_distance_threshold); // 특정 점이 평면에 포함되려면, 해당 점과 평면 사이의 거리가 이것 이하여야 함
+
+    seg.setInputCloud(cloud_out); // 입력 포인트 클라우드
+    seg.segment(*inliers, *plane_coefs); // 평면 세그멘테이션 수행
 
     // 평면 포인트 제거
-    if (!inliers->indices.empty()) {
+    if (!inliers->indices.empty()) { // 평면 포인트 명단에 뭔가 있으면
         pcl::ExtractIndices<Point> extract;
-        extract.setInputCloud(cloud_out);
-        extract.setIndices(inliers);
-        extract.setNegative(true);
-        extract.filter(*cloud_out);
+        extract.setInputCloud(cloud_out); // 입력 포인트 클라우드
+        extract.setIndices(inliers); // 평면 포인트 명단
+        extract.setNegative(true); // 평면 포인트 제거
+        extract.filter(*cloud_out); // 평면 포인트 제거
     }
 
     // 여기에서 180도 회전 보정
