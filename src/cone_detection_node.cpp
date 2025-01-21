@@ -6,7 +6,7 @@ namespace LIDAR {
 // OutlierFilter 클래스 생성자: ROS2 노드 초기화 및 설정
 OutlierFilter::OutlierFilter()
     : Node("outlier_filter") {
-        
+    
     // ROS2 파라미터 선언
     this->declare_parameter("z_threshold_enable", params_.z_threshold_enable);
     this->declare_parameter("z_threshold_min", params_.z_threshold_min);
@@ -291,7 +291,15 @@ void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<doub
     visualization_msgs::msg::MarkerArray markers;
     
     // 1. 기존 마커를 삭제
-    markers.markers.clear();
+    for (int id = 0; id < previous_marker_count_; ++id) {
+        visualization_msgs::msg::Marker delete_marker;
+        delete_marker.header.frame_id = "os_sensor";
+        delete_marker.header.stamp = this->now();
+        delete_marker.ns = "sorted_cones";
+        delete_marker.id = id;
+        delete_marker.action = visualization_msgs::msg::Marker::DELETE;
+        markers.markers.push_back(delete_marker);
+    }
 
     // 2. 새로운 마커를 추가
     int id = 0;
@@ -321,7 +329,11 @@ void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<doub
         markers.markers.push_back(marker);
     }
 
-    marker_pub_->publish(markers);  // Publish the marker array
+    // 3. 마커 갯수 갱신
+    previous_marker_count_ = id;
+
+    // 4. 마커 퍼블리싱
+    marker_pub_->publish(markers);
 }
 
 

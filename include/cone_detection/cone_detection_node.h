@@ -79,6 +79,7 @@ protected:
 
     // 클러스터링된 콘 시각화
     void visualizeCones(const std::vector<ConeDescriptor> &cones);
+    int previous_marker_count_ = 0;
 
     // ROI 영역 각도 계산
     float ROI_theta(float x, float y);
