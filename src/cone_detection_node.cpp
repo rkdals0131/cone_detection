@@ -289,8 +289,12 @@ void OutlierFilter::visualizeCones(const std::vector<ConeDescriptor> &cones) {
 
 void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<double>> &sorted_cones) {
     visualization_msgs::msg::MarkerArray markers;
-    int id = 0;
+    
+    // 1. 기존 마커를 삭제
+    markers.markers.clear();
 
+    // 2. 새로운 마커를 추가
+    int id = 0;
     for (const auto &cone : sorted_cones) {
         visualization_msgs::msg::Marker marker;
         marker.header.frame_id = "os_sensor";
