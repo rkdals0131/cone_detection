@@ -257,7 +257,7 @@ void OutlierFilter::publishArray(
     publisher->publish(msg);
 }
 
-// 콘 클러스터를 시각화
+// cones 클러스터를 시각화
 void OutlierFilter::visualizeCones(const std::vector<ConeDescriptor> &cones) {
     visualization_msgs::msg::MarkerArray markers;
     int id = 0;
@@ -287,6 +287,7 @@ void OutlierFilter::visualizeCones(const std::vector<ConeDescriptor> &cones) {
     marker_pub_->publish(markers);
 }
 
+// sorted_cones 클러스터를 시각화
 void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<double>> &sorted_cones) {
     visualization_msgs::msg::MarkerArray markers;
     

@@ -1,8 +1,8 @@
 cone_detection:
   ros__parameters:
     z_threshold_enable: true        # Z축 필터링 활성화 여부 (True: 활성화, False: 비활성화)
-    z_threshold_min: -1.0          # Z축 최소값 (필터링 기준, 지면 제거를 위한 값)
-    z_threshold_max: 1.0           # Z축 최대값 (필터링 기준, 최대 높이 제한)
+    z_threshold_min: -0.9          # Z축 최소값 (필터링 기준, 지면 제거를 위한 값)
+    z_threshold_max: 0.7           # Z축 최대값 (필터링 기준, 최대 높이 제한)
     min_distance: 1.6               # 최소 거리 필터링 (LIDAR로부터 너무 가까운 점 제거)
     max_distance: 8.0             # 최대 거리 필터링 (LIDAR로부터 너무 먼 점 제거)
     intensity_threshold: 5.0       # Intensity 필터링 기준값 (값이 낮은 점 제거)
@@ -12,8 +12,8 @@ cone_detection:
     roi_angle_min: -160.0             # ROI(관심 영역)의 최소 각도 (X축 기준, 좌측 범위)
     roi_angle_max: -20.0            # ROI(관심 영역)의 최대 각도 (X축 기준, 우측 범위)
 
-    voxel_leaf_size: 0.1           # Voxel Grid 필터링의 leaf 크기 (다운샘플링 해상도)
+    voxel_leaf_size: 0.08           # Voxel Grid 필터링의 leaf 크기 (다운샘플링 해상도)
     
-    ec_cluster_tolerance: 0.6      # 한 군집이 될 점간의 거리 임계값
-    ec_min_cluster_size: 10        # 클러스터로 인정하기 위한 최소 포인트 수 // 증가: 노이즈 제외, 클러스터 수 감소, 감소: 더 작은 클러스터 인정
-    ec_max_cluster_size: 200       # 클러스터로 인정하기 위한 최대 포인트 수 // 증가: 매우 큰 클러스터도 유지, 감소: 일정 크기 이상 클러스터 제외
+    ec_cluster_tolerance: 0.3      # 한 군집이 될 점간의 거리 임계값
+    ec_min_cluster_size: 5        # 클러스터로 인정하기 위한 최소 포인트 수 // 증가: 노이즈 제외, 클러스터 수 감소, 감소: 더 작은 클러스터 인정
+    ec_max_cluster_size: 15       # 클러스터로 인정하기 위한 최대 포인트 수 // 증가: 매우 큰 클러스터도 유지, 감소: 일정 크기 이상 클러스터 제외

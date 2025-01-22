@@ -4,7 +4,7 @@
   <version>0.1.0</version>
   <description>Cone detection package for ROS2</description>
 
-  <maintainer email="ryanlee0916@konkuk.ac.kr">lhj</maintainer>
+  <maintainer email="kikiws70@konkuk.ac.kr">lhj</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
