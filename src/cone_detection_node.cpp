@@ -14,7 +14,6 @@ OutlierFilter::OutlierFilter()
     this->declare_parameter("x_threshold_min", params_.x_threshold_min);
     this->declare_parameter("x_threshold_max", params_.x_threshold_max);
     this->declare_parameter("y_threshold_min", params_.y_threshold_min);
-    this->declare_parameter("y_threshold_min", params_.y_threshold_min);
     this->declare_parameter("y_threshold_max", params_.y_threshold_max);
     this->declare_parameter("z_threshold_min", params_.z_threshold_min);
     this->declare_parameter("z_threshold_max", params_.z_threshold_max);
