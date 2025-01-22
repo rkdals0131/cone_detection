@@ -19,7 +19,13 @@ namespace LIDAR {
 class OutlierFilter : public rclcpp::Node {
 public:
     struct Params {
+        bool x_threshold_enable = false;  // X 필터링 활성화 여부
+        bool y_threshold_enable = false;  // Y 필터링 활성화 여부
         bool z_threshold_enable = true;  // Z 필터링 활성화 여부
+        float x_threshold_min = -2.0f;   // X 최소값
+        float x_threshold_max = 2.0f;    // X 최대값
+        float y_threshold_min = -3.0f;   // Y 최소값
+        float y_threshold_max = 3.0f;    // Y 최대값
         float z_threshold_min = -5.0f;   // Z 최소값
         float z_threshold_max = 1.0f;    // Z 최대값
         float min_distance = 1.5f;       // 최소 거리
