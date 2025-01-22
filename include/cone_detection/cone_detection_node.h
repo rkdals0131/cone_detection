@@ -10,8 +10,7 @@
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/voxel_grid.h>
 #include <Eigen/Dense>
-
-#include "/usr/include/pcl-1.12/pcl/common/transforms.h"
+#include <pcl/common/transforms.h>
 
 #include "common_defs.h"
 
