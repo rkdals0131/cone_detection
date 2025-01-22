@@ -8,7 +8,14 @@ OutlierFilter::OutlierFilter()
     : Node("outlier_filter") {
     
     // ROS2 파라미터 선언
+    this->declare_parameter("x_threshold_enable", params_.x_threshold_enable);
+    this->declare_parameter("y_threshold_enable", params_.y_threshold_enable);
     this->declare_parameter("z_threshold_enable", params_.z_threshold_enable);
+    this->declare_parameter("x_threshold_min", params_.x_threshold_min);
+    this->declare_parameter("x_threshold_max", params_.x_threshold_max);
+    this->declare_parameter("y_threshold_min", params_.y_threshold_min);
+    this->declare_parameter("y_threshold_min", params_.y_threshold_min);
+    this->declare_parameter("y_threshold_max", params_.y_threshold_max);
     this->declare_parameter("z_threshold_min", params_.z_threshold_min);
     this->declare_parameter("z_threshold_max", params_.z_threshold_max);
     this->declare_parameter("min_distance", params_.min_distance);
@@ -23,7 +30,13 @@ OutlierFilter::OutlierFilter()
     this->declare_parameter("ec_max_cluster_size", params_.ec_max_cluster_size);
 
     // Load parameters from Config file
+    this->get_parameter("x_threshold_enable", params_.x_threshold_enable);
+    this->get_parameter("y_threshold_enable", params_.y_threshold_enable);
     this->get_parameter("z_threshold_enable", params_.z_threshold_enable);
+    this->get_parameter("x_threshold_min", params_.x_threshold_min);
+    this->get_parameter("x_threshold_max", params_.x_threshold_max);
+    this->get_parameter("y_threshold_min", params_.y_threshold_min);
+    this->get_parameter("y_threshold_max", params_.y_threshold_max);
     this->get_parameter("z_threshold_min", params_.z_threshold_min);
     this->get_parameter("z_threshold_max", params_.z_threshold_max);
     this->get_parameter("min_distance", params_.min_distance);
@@ -39,6 +52,12 @@ OutlierFilter::OutlierFilter()
 
     // Log loaded parameters for verification
     RCLCPP_INFO(this->get_logger(), "Loaded Parameters:");
+    RCLCPP_INFO(this->get_logger(), "  x_threshold_enable: %s", params_.x_threshold_enable ? "true" : "false");
+    RCLCPP_INFO(this->get_logger(), "  x_threshold_min: %.2f", params_.x_threshold_min);
+    RCLCPP_INFO(this->get_logger(), "  x_threshold_max: %.2f", params_.x_threshold_max);
+    RCLCPP_INFO(this->get_logger(), "  y_threshold_enable: %s", params_.y_threshold_enable ? "true" : "false");
+    RCLCPP_INFO(this->get_logger(), "  y_threshold_min: %.2f", params_.y_threshold_min);
+    RCLCPP_INFO(this->get_logger(), "  y_threshold_max: %.2f", params_.y_threshold_max);
     RCLCPP_INFO(this->get_logger(), "  z_threshold_enable: %s", params_.z_threshold_enable ? "true" : "false");
     RCLCPP_INFO(this->get_logger(), "  z_threshold_min: %.2f", params_.z_threshold_min);
     RCLCPP_INFO(this->get_logger(), "  z_threshold_max: %.2f", params_.z_threshold_max);
@@ -118,12 +137,13 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
         float distance = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
 
         // Config 파일에서 로드된 파라미터로 필터링
-        if ((angle >= params_.roi_angle_min && angle <= params_.roi_angle_max) &&  // ROI 각도 범위
-            /* point.x <= 0 && */
-            distance >= params_.min_distance &&  // 최소 거리 조건 추가
-            distance <= params_.max_distance &&
-            point.z >= params_.z_threshold_min && point.z <= params_.z_threshold_max &&
-            point.intensity >= params_.intensity_threshold) {
+        if (params_.roi_angle_min <= angle && angle <= params_.roi_angle_max && // ROI 각도 범위
+            params_.x_threshold_min <= point.x && point.x <= params_.x_threshold_max && // X축 범위
+            params_.y_threshold_min <= point.y && point.y <= params_.y_threshold_max && // Y축 범위
+            params_.z_threshold_min <= point.z && point.z <= params_.z_threshold_max && // Z축 범위
+            params_.min_distance <= distance && distance <= params_.max_distance &&     // 거리 범위
+            params_.intensity_threshold <= point.intensity) {                           // 강도 범위
+
             filtered_points.push_back(point);
         }
     }
