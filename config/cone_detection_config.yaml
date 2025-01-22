@@ -18,7 +18,7 @@ cone_detection:
     roi_angle_min: -160.0             # ROI(관심 영역)의 최소 각도 (X축 기준, 좌측 범위)
     roi_angle_max: -20.0            # ROI(관심 영역)의 최대 각도 (X축 기준, 우측 범위)
 
-    voxel_leaf_size: 0.08           # Voxel Grid 필터링의 leaf 크기 (다운샘플링 해상도)
+    voxel_leaf_size: 0.1           # Voxel Grid 필터링의 leaf 크기 (다운샘플링 해상도)
     
     ec_cluster_tolerance: 0.3      # 한 군집이 될 점간의 거리 임계값
     ec_min_cluster_size: 5        # 클러스터로 인정하기 위한 최소 포인트 수 // 증가: 노이즈 제외, 클러스터 수 감소, 감소: 더 작은 클러스터 인정

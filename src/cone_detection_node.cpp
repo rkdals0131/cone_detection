@@ -136,12 +136,12 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
         float distance = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
 
         // Config 파일에서 로드된 파라미터로 필터링
-        if (params_.roi_angle_min <= angle && angle <= params_.roi_angle_max && // ROI 각도 범위
-            params_.x_threshold_min <= point.x && point.x <= params_.x_threshold_max && // X축 범위
-            params_.y_threshold_min <= point.y && point.y <= params_.y_threshold_max && // Y축 범위
-            params_.z_threshold_min <= point.z && point.z <= params_.z_threshold_max && // Z축 범위
-            params_.min_distance <= distance && distance <= params_.max_distance &&     // 거리 범위
-            params_.intensity_threshold <= point.intensity) {                           // 강도 범위
+        if ((params_.roi_angle_min <= angle && angle <= params_.roi_angle_max) && // ROI 각도 범위
+            (params_.x_threshold_enable && params_.x_threshold_min <= point.x && point.x <= params_.x_threshold_max) && // X축 범위
+            (params_.y_threshold_enable && params_.y_threshold_min <= point.y && point.y <= params_.y_threshold_max) && // Y축 범위
+            (params_.z_threshold_enable && params_.z_threshold_min <= point.z && point.z <= params_.z_threshold_max) && // Z축 범위
+            (params_.min_distance <= distance && distance <= params_.max_distance) &&     // 거리 범위
+            (params_.intensity_threshold <= point.intensity)) {                           // 강도 범위
 
             filtered_points.push_back(point);
         }

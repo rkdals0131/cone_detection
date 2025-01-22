@@ -1,0 +1,17 @@
+[0.015s] Invoking command in '/home/user1/pcl_ws/src/cone_detection/build/cone_detection': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user1/nav2_ws/install/neuronbot2_led:/home/user1/ros2_ws/install/tutorial_topic:/home/user1/ros2_ws/install/tutorial_service:/home/user1/ros2_ws/install/tutorial_action:/home/user1/ros2_ws/install/node_exercise:/home/user1/ros2_ws/install/my_package:/home/user1/ros2_ws/install/moving_services:/home/user1/ros2_ws/install/logger_test:/home/user1/ros2_ws/install/custom_interface_example:/opt/ros/humble /usr/bin/cmake /home/user1/pcl_ws/src/cone_detection -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user1/pcl_ws/src/cone_detection/install/cone_detection
+[0.147s] -- The C compiler identification is GNU 11.4.0
+[0.223s] -- The CXX compiler identification is GNU 11.4.0
+[0.237s] -- Detecting C compiler ABI info
+[0.340s] -- Detecting C compiler ABI info - done
+[0.347s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.347s] -- Detecting C compile features
+[0.348s] -- Detecting C compile features - done
+[0.351s] -- Detecting CXX compiler ABI info
+[0.483s] -- Detecting CXX compiler ABI info - done
+[0.488s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.488s] -- Detecting CXX compile features
+[0.489s] -- Detecting CXX compile features - done
+[0.511s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.724s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.808s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.893s] Invoked command in '/home/user1/pcl_ws/src/cone_detection/build/cone_detection' returned '-2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/user1/nav2_ws/install/neuronbot2_led:/home/user1/ros2_ws/install/tutorial_topic:/home/user1/ros2_ws/install/tutorial_service:/home/user1/ros2_ws/install/tutorial_action:/home/user1/ros2_ws/install/node_exercise:/home/user1/ros2_ws/install/my_package:/home/user1/ros2_ws/install/moving_services:/home/user1/ros2_ws/install/logger_test:/home/user1/ros2_ws/install/custom_interface_example:/opt/ros/humble /usr/bin/cmake /home/user1/pcl_ws/src/cone_detection -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/user1/pcl_ws/src/cone_detection/install/cone_detection
