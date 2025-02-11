@@ -1,5 +1,8 @@
 cone_detection:
   ros__parameters:
+    topic_name: "/ouster/points"         
+    frame_id_: "os_sensor" 
+    
     x_threshold_enable: true       # X축 필터링 활성화 여부 (True: 활성화, False: 비활성화)
     y_threshold_enable: true       # Y축 필터링 활성화 여부 (True: 활성화, False: 비활성화)
     z_threshold_enable: true        # Z축 필터링 활성화 여부 (True: 활성화, False: 비활성화)

@@ -8,6 +8,8 @@ OutlierFilter::OutlierFilter()
     : Node("outlier_filter") {
     
     // ROS2 파라미터 선언
+    this->declare_parameter("topic_name", params_.topic_name);
+    this->declare_parameter("frame_id_", params_.frame_id_);
     this->declare_parameter("x_threshold_enable", params_.x_threshold_enable);
     this->declare_parameter("y_threshold_enable", params_.y_threshold_enable);
     this->declare_parameter("z_threshold_enable", params_.z_threshold_enable);
@@ -29,6 +31,8 @@ OutlierFilter::OutlierFilter()
     this->declare_parameter("ec_max_cluster_size", params_.ec_max_cluster_size);
 
     // Load parameters from Config file
+    this->get_parameter("topic_name", params_.topic_name);
+    this->get_parameter("frame_id_", params_.frame_id_);
     this->get_parameter("x_threshold_enable", params_.x_threshold_enable);
     this->get_parameter("y_threshold_enable", params_.y_threshold_enable);
     this->get_parameter("z_threshold_enable", params_.z_threshold_enable);
@@ -51,6 +55,8 @@ OutlierFilter::OutlierFilter()
 
     // Log loaded parameters for verification
     RCLCPP_INFO(this->get_logger(), "Loaded Parameters:");
+    RCLCPP_INFO(this->get_logger(), "  topic_name: %s", params_.topic_name.c_str());
+    RCLCPP_INFO(this->get_logger(), "  frame_id: %s", params_.frame_id_.c_str());
     RCLCPP_INFO(this->get_logger(), "  x_threshold_enable: %s", params_.x_threshold_enable ? "true" : "false");
     RCLCPP_INFO(this->get_logger(), "  x_threshold_min: %.2f", params_.x_threshold_min);
     RCLCPP_INFO(this->get_logger(), "  x_threshold_max: %.2f", params_.x_threshold_max);
@@ -79,7 +85,7 @@ OutlierFilter::OutlierFilter()
 
     // 서브스크라이버 초기화 (포인트 클라우드 데이터 수신)
     point_cloud_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "/ouster/points", rclcpp::SensorDataQoS(), // <-- QoS '10' -> 'rclcpp::SensorDataQoS()'로 바꿈.
+        params_.topic_name, rclcpp::SensorDataQoS(), // <-- QoS '10' -> 'rclcpp::SensorDataQoS()'로 바꿈.
         std::bind(&OutlierFilter::callback, this, std::placeholders::_1));
 
     RCLCPP_INFO(this->get_logger(), "Cone_detection_node has been started!!!!!!!!!!!!!!!!!!!");  // 노드 시작 로그 출력
@@ -248,7 +254,7 @@ void OutlierFilter::publishCloud(
     Cloud::Ptr &cloud) {
     sensor_msgs::msg::PointCloud2 cloud_msg;
     pcl::toROSMsg(*cloud, cloud_msg);
-    cloud_msg.header.frame_id = "os_sensor";
+    cloud_msg.header.frame_id = params_.frame_id_;
     cloud_msg.header.stamp = this->now();
     publisher->publish(cloud_msg);
 }
@@ -284,7 +290,7 @@ void OutlierFilter::visualizeCones(const std::vector<ConeDescriptor> &cones) {
 
     for (const auto &cone : cones) {
         visualization_msgs::msg::Marker marker;
-        marker.header.frame_id = "os_sensor";
+        marker.header.frame_id = params_.frame_id_;
         marker.header.stamp = this->now();
         marker.ns = "cones";
         marker.id = id++;
@@ -314,7 +320,7 @@ void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<doub
     // 1. 기존 마커를 삭제
     for (int id = 0; id < previous_marker_count_; ++id) {
         visualization_msgs::msg::Marker delete_marker;
-        delete_marker.header.frame_id = "os_sensor";
+        delete_marker.header.frame_id = params_.frame_id_;
         delete_marker.header.stamp = this->now();
         delete_marker.ns = "sorted_cones";
         delete_marker.id = id;
@@ -326,7 +332,7 @@ void OutlierFilter::publishSortedConesMarkers(const std::vector<std::vector<doub
     int id = 0;
     for (const auto &cone : sorted_cones) {
         visualization_msgs::msg::Marker marker;
-        marker.header.frame_id = "os_sensor";
+        marker.header.frame_id = params_.frame_id_;
         marker.header.stamp = this->now();
         marker.ns = "sorted_cones";
         marker.id = id++;
