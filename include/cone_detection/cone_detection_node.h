@@ -19,6 +19,8 @@ namespace LIDAR {
 class OutlierFilter : public rclcpp::Node {
 public:
     struct Params {
+        std::string topic_name;
+        std::string frame_id_;
         bool x_threshold_enable = false;  // X 필터링 활성화 여부
         bool y_threshold_enable = false;  // Y 필터링 활성화 여부
         bool z_threshold_enable = true;  // Z 필터링 활성화 여부
