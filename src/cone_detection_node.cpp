@@ -186,7 +186,7 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
     }
 
     // 여기에서 180도 회전 보정
-    correctYawRotation(cloud_out);
+    // correctYawRotation(cloud_out);
 }
 
 // 필터링 후 180도 회전 보정
@@ -294,7 +294,7 @@ void OutlierFilter::publishArrayWithTimestamp(
 
     msg.header.stamp = timestamp;
     msg.header.frame_id = params_.frame_id_;
-
+    
     // 메시지 레이아웃 설정
     msg.layout.dim.resize(2); // 2차원 배열 형태 
     if (!array.empty()) {
@@ -302,7 +302,12 @@ void OutlierFilter::publishArrayWithTimestamp(
         msg.layout.dim[1].size = array[0].size(); // 열 개수(각 클러스터의 x, y 좌표)
         msg.layout.dim[0].stride = array.size() * array[0].size(); // 전체 데이터 크기
         msg.layout.dim[1].stride = array[0].size(); // 각 클러스터 데이터 크기
+        
+        // Initialize class_names with "Unknown" for each cone
+        msg.class_names.resize(array.size());
+        std::fill(msg.class_names.begin(), msg.class_names.end(), "Unknown");
     }
+    
     // 데이터를 메시지의 배열에 추가
     for (const auto &row : array) {
         for (const auto &val : row) {
