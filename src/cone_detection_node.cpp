@@ -81,6 +81,7 @@ OutlierFilter::OutlierFilter()
     // 퍼블리셔 초기화 (마커, 정렬된 콘, 처리된 포인트 클라우드)
     marker_pub_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("/visualization_marker", 10);
     cones_pub_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("/sorted_cones", 10);
+    cones_time_pub = this->create_publisher<custom_interface::msg::ModifiedFloat32MultiArray>("/sorted_cones_time", 10);
     pub_cones_cloud_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/point_cones", 10);
 
     // 서브스크라이버 초기화 (포인트 클라우드 데이터 수신)
@@ -111,6 +112,7 @@ void OutlierFilter::callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     // 콘 정렬 및 결과 퍼블리싱
     std::vector<std::vector<double>> sorted_cones = sortCones(cones);
     publishArray(cones_pub_, sorted_cones);
+    publishArrayWithTimestamp(cones_time_pub, sorted_cones, msg->header.stamp);
 
     // 콘 데이터를 기반으로 MarkerArray 발행
     publishSortedConesMarkers(sorted_cones); // 추가된 부분
@@ -184,7 +186,7 @@ void OutlierFilter::filterPointCloud(Cloud::Ptr &cloud_in, Cloud::Ptr &cloud_out
     }
 
     // 여기에서 180도 회전 보정
-    correctYawRotation(cloud_out);
+    // correctYawRotation(cloud_out);
 }
 
 // 필터링 후 180도 회전 보정
@@ -273,6 +275,39 @@ void OutlierFilter::publishArray(
         msg.layout.dim[0].stride = array.size() * array[0].size(); // 전체 데이터 크기
         msg.layout.dim[1].stride = array[0].size(); // 각 클러스터 데이터 크기
     }
+    // 데이터를 메시지의 배열에 추가
+    for (const auto &row : array) {
+        for (const auto &val : row) {
+            msg.data.push_back(val); // x,y 좌표 순차적으로 추가
+        }
+    }
+
+    publisher->publish(msg);
+}
+
+// 정렬된 콘 데이터를 타임스탬프와 함께 퍼블리싱
+void OutlierFilter::publishArrayWithTimestamp(
+    const rclcpp::Publisher<custom_interface::msg::ModifiedFloat32MultiArray>::SharedPtr &publisher,
+    const std::vector<std::vector<double>> &array,
+    const rclcpp::Time &timestamp) {
+    custom_interface::msg::ModifiedFloat32MultiArray msg;
+
+    msg.header.stamp = timestamp;
+    msg.header.frame_id = params_.frame_id_;
+    
+    // 메시지 레이아웃 설정
+    msg.layout.dim.resize(2); // 2차원 배열 형태 
+    if (!array.empty()) {
+        msg.layout.dim[0].size = array.size(); // 행 개수(클러스터 개수)
+        msg.layout.dim[1].size = array[0].size(); // 열 개수(각 클러스터의 x, y 좌표)
+        msg.layout.dim[0].stride = array.size() * array[0].size(); // 전체 데이터 크기
+        msg.layout.dim[1].stride = array[0].size(); // 각 클러스터 데이터 크기
+        
+        // Initialize class_names with "Unknown" for each cone
+        msg.class_names.resize(array.size());
+        std::fill(msg.class_names.begin(), msg.class_names.end(), "Unknown");
+    }
+    
     // 데이터를 메시지의 배열에 추가
     for (const auto &row : array) {
         for (const auto &val : row) {

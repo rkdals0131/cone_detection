@@ -13,14 +13,16 @@
 #include <pcl/common/transforms.h>
 
 #include "common_defs.h"
+#include "custom_interface/msg/modified_float32_multi_array.hpp"
+
 
 namespace LIDAR {
 
 class OutlierFilter : public rclcpp::Node {
 public:
     struct Params {
-        std::string topic_name;
-        std::string frame_id_;
+        std::string topic_name;         // 토픽 이름
+        std::string frame_id_;          // 프레임 ID
         bool x_threshold_enable = false;  // X 필터링 활성화 여부
         bool y_threshold_enable = false;  // Y 필터링 활성화 여부
         bool z_threshold_enable = true;  // Z 필터링 활성화 여부
@@ -51,6 +53,7 @@ protected:
     // ROS2 퍼블리셔
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr cones_pub_;
+    rclcpp::Publisher<custom_interface::msg::ModifiedFloat32MultiArray>::SharedPtr cones_time_pub;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pub_cones_cloud_;
 
     // ROS2 서브스크라이버
@@ -83,6 +86,12 @@ protected:
     void publishArray(
         const rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr &publisher,
         const std::vector<std::vector<double>> &array);
+
+    // 정련된 콘 데이터를 타임스탬프와 함께 퍼블리싱
+    void publishArrayWithTimestamp(
+        const rclcpp::Publisher<custom_interface::msg::ModifiedFloat32MultiArray>::SharedPtr &publisher,
+        const std::vector<std::vector<double>> &array,
+        const rclcpp::Time &timestamp);
 
     // 클러스터링된 콘 시각화
     void visualizeCones(const std::vector<ConeDescriptor> &cones);

@@ -16,6 +16,7 @@ find_package(visualization_msgs REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io visualization filters)
 find_package(Boost REQUIRED COMPONENTS thread)
 find_package(rosidl_default_generators REQUIRED)
+find_package(custom_interface REQUIRED)
 
 # Add PCL definitions
 add_definitions(${PCL_DEFINITIONS})
@@ -30,12 +31,9 @@ include_directories(
 # Add library
 add_library(${PROJECT_NAME}_library
   src/cone_detection_node.cpp
-  include/cone_detection/cone_visualizer.h
-  include/cone_detection/common_defs.h
-  include/cone_detection/cone_detection_node.h
 )
 
-# Link libraries
+# Link libraries (custom_interface 제거, ament_target_dependencies로 처리)
 target_link_libraries(${PROJECT_NAME}_library
   ${PCL_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -48,12 +46,12 @@ ament_target_dependencies(${PROJECT_NAME}_library
   std_msgs
   pcl_conversions
   visualization_msgs
-  rosidl_default_runtime
+  custom_interface
 )
 
 # Add executable
 add_executable(${PROJECT_NAME}_node
-  src/cone_detection_node.cpp
+  src/cone_detection_node.cpp  # main 함수가 있는 파일로 가정, 필요 시 수정
 )
 
 # Link the library to the executable
@@ -68,7 +66,7 @@ ament_target_dependencies(${PROJECT_NAME}_node
   std_msgs
   pcl_conversions
   visualization_msgs
-  rosidl_default_runtime
+  custom_interface
 )
 
 # Install targets
