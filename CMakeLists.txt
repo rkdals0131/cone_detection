@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-cmake_policy(SET CMP0074 NEW)
 
+# 시스템 라이브러리와 콘다 환경 충돌 방지
+list(REMOVE_ITEM CMAKE_SYSTEM_PREFIX_PATH /home/user1/miniforge3/envs/yolo /home/user1/miniforge3)
+cmake_policy(SET CMP0074 NEW)
 project(cone_detection)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -50,6 +52,7 @@ ament_target_dependencies(${PROJECT_NAME}_library
 )
 
 # Add executable
+set(CMAKE_SKIP_BUILD_RPATH TRUE)
 add_executable(${PROJECT_NAME}_node
   src/cone_detection_node.cpp  # main 함수가 있는 파일로 가정, 필요 시 수정
 )
