@@ -23,6 +23,6 @@ cone_detection:
 
     voxel_leaf_size: 0.1           # Voxel Grid 필터링의 leaf 크기 (다운샘플링 해상도)
     
-    ec_cluster_tolerance: 0.35      # 한 군집이 될 점간의 거리 임계값
-    ec_min_cluster_size: 5        # 클러스터로 인정하기 위한 최소 포인트 수 // 증가: 노이즈 제외, 클러스터 수 감소, 감소: 더 작은 클러스터 인정
-    ec_max_cluster_size: 20       # 클러스터로 인정하기 위한 최대 포인트 수 // 증가: 매우 큰 클러스터도 유지, 감소: 일정 크기 이상 클러스터 제외
+    ec_cluster_tolerance: 0.25      # 한 군집이 될 점간의 거리 임계값
+    ec_min_cluster_size: 1        # 클러스터로 인정하기 위한 최소 포인트 수 // 증가: 노이즈 제외, 클러스터 수 감소, 감소: 더 작은 클러스터 인정
+    ec_max_cluster_size: 25       # 클러스터로 인정하기 위한 최대 포인트 수 // 증가: 매우 큰 클러스터도 유지, 감소: 일정 크기 이상 클러스터 제외

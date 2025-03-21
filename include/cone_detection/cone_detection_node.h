@@ -80,7 +80,8 @@ protected:
     // 포인트 클라우드 퍼블리싱
     void publishCloud(
         const rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr &publisher,
-        Cloud::Ptr &cloud);
+        Cloud::Ptr &cloud,
+        const rclcpp::Time &timestamp);
 
     // 정렬된 콘 데이터를 퍼블리싱
     void publishArray(

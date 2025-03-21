@@ -103,7 +103,7 @@ void OutlierFilter::callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
     filterPointCloud(cloud_in, cloud_out);
 
     // 필터링된 포인트 클라우드를 퍼블리싱
-    publishCloud(pub_cones_cloud_, cloud_out);
+    publishCloud(pub_cones_cloud_, cloud_out, msg->header.stamp);
 
     // 클러스터링 및 결과 퍼블리싱
     std::vector<ConeDescriptor> cones;
@@ -253,11 +253,12 @@ std::vector<std::vector<double>> OutlierFilter::sortCones(const std::vector<Cone
 // 포인트 클라우드 퍼블리싱
 void OutlierFilter::publishCloud(
     const rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr &publisher,
-    Cloud::Ptr &cloud) {
+    Cloud::Ptr &cloud,
+    const rclcpp::Time &timestamp) {
     sensor_msgs::msg::PointCloud2 cloud_msg;
     pcl::toROSMsg(*cloud, cloud_msg);
     cloud_msg.header.frame_id = params_.frame_id_;
-    cloud_msg.header.stamp = this->now();
+    cloud_msg.header.stamp = timestamp;
     publisher->publish(cloud_msg);
 }
 
